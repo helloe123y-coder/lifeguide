@@ -31,12 +31,14 @@ app.post('/api/profiles', (req: Request, res: Response) => {
 app.post('/api/chat', (req: Request, res: Response) => {
   const { prompt, profile } = req.body;
 
-  const response = `Thanks for the prompt: "${prompt || 'No prompt provided'}". Based on the user profile, the best next step is to clarify the core decision, compare options, and choose a low-risk action that reduces uncertainty.`;
+  const responseText = prompt
+    ? `Thanks for the prompt: "${prompt}". Based on your profile, the decision process should be: 1) define the problem clearly, 2) compare options, 3) review risks and support, and 4) choose the lowest-risk next step. The strongest recommendation is to act on the option that balances long-term fit with short-term confidence.`
+    : 'Tell me more about your situation so I can help you break it into choices and next steps.';
 
   res.json({
     success: true,
     profileSummary: profile || 'Youth profile',
-    reply: response,
+    reply: responseText,
   });
 });
 
@@ -47,11 +49,11 @@ app.post('/api/scenarios/model', (req: Request, res: Response) => {
     success: true,
     recommendation: {
       scenario: decision || 'Career and life transition decision',
-      bestOption: 'Choose the option with the strongest short-term clarity and long-term fit',
+      bestOption: 'Choose the option with the strongest short-term clarity and lowest long-term regret.',
       reasoning: [
         'Evaluate values and risk tolerance',
-        'Assess support, time, and cost',
-        'Choose the action with the most learning and lowest downside',
+        'Assess realistic support and resources',
+        'Choose the option that reduces uncertainty with the least downside',
       ],
     },
   });

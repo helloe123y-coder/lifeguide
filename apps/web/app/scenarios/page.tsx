@@ -1,0 +1,87 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+
+const initialScenario = {
+  name: 'Career decision',
+  decision: 'Stay in current role or pursue a new path',
+  options: [
+    { name: 'Stay', score: 71, risk: 'Low flexibility', impact: 'Stable income' },
+    { name: 'Switch', score: 83, risk: 'Uncertainty', impact: 'Growth opportunity' },
+    { name: 'Train first', score: 88, risk: 'Time cost', impact: 'Better preparation' },
+  ],
+};
+
+export default function ScenariosPage() {
+  const [scenario, setScenario] = useState(initialScenario);
+
+  const bestOption = useMemo(
+    () => [...scenario.options].sort((a, b) => b.score - a.score)[0],
+    [scenario.options]
+  );
+
+  return (
+    <div className="mx-auto max-w-6xl px-6 py-16">
+      <div className="mb-8 text-center">
+        <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">Scenario modeling</p>
+        <h1 className="mt-3 text-4xl font-black text-slate-900">Model your next move</h1>
+      </div>
+
+      <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-soft">
+          <div className="mb-6">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">Scenario title</label>
+            <input
+              value={scenario.name}
+              onChange={(event) => setScenario((current) => ({ ...current, name: event.target.value }))}
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-brand-500"
+            />
+          </div>
+
+          <div className="mb-6">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">Decision to evaluate</label>
+            <textarea
+              value={scenario.decision}
+              onChange={(event) => setScenario((current) => ({ ...current, decision: event.target.value }))}
+              className="min-h-28 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-brand-500"
+            />
+          </div>
+
+          <div className="space-y-4">
+            {scenario.options.map((option) => (
+              <div key={option.name} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-slate-900">{option.name}</h3>
+                  <span className="rounded-full bg-brand-100 px-3 py-1 text-sm font-semibold text-brand-700">{option.score}/100</span>
+                </div>
+                <div className="h-2.5 overflow-hidden rounded-full bg-slate-200">
+                  <div className="h-full rounded-full bg-gradient-to-r from-brand-500 to-indigo-500" style={{ width: `${option.score}%` }} />
+                </div>
+                <div className="mt-3 flex justify-between text-sm text-slate-600">
+                  <span>Risk: {option.risk}</span>
+                  <span>Impact: {option.impact}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-slate-200 bg-slate-900 p-8 text-white shadow-soft">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Recommendation</p>
+          <h2 className="mt-3 text-3xl font-black">Best option</h2>
+
+          <div className="mt-8 rounded-3xl bg-white/5 p-6">
+            <p className="text-2xl font-bold">{bestOption.name}</p>
+            <p className="mt-2 text-slate-300">With a score of {bestOption.score}/100, this path balances opportunity, risk, and support most effectively.</p>
+          </div>
+
+          <ul className="mt-8 space-y-4 text-sm text-slate-200">
+            <li>• Prioritize the path with the highest long-term fit to your values.</li>
+            <li>• Reduce uncertainty with one low-risk action in the next 30 days.</li>
+            <li>• Use AI guidance to validate assumptions before acting.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}

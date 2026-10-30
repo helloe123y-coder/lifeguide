@@ -1,17 +1,18 @@
-import './globals.css';
 import Link from 'next/link';
-
-export const metadata = {
-  title: 'LifeGuide',
-  description: 'Personalized decision-making for youth and adults.',
-};
 
 const navItems = [
   { href: '/', label: 'Home' },
   { href: '/profile', label: 'Profile' },
   { href: '/chat', label: 'AI Coach' },
   { href: '/scenarios', label: 'Scenario Builder' },
+  { href: '/youth', label: 'Youth' },
+  { href: '/adults', label: 'Adults' },
 ];
+
+export const metadata = {
+  title: 'LifeGuide',
+  description: 'Lifecycle guidance and decision-making support for youth and adults.',
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -38,10 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 ))}
               </nav>
 
-              <Link
-                href="/profile"
-                className="rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
-              >
+              <Link href="/profile" className="rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">
                 Start now
               </Link>
             </div>

@@ -3,30 +3,59 @@
 import { useState } from 'react';
 
 const starterMessages = [
-  'I am considering switching careers and need guidance on whether I should stay or explore a new path.',
-  'I want to decide whether to leave school for work or continue my education.',
-  'I need help balancing my personal life, finances, and long-term goals.',
+  'I am considering switching careers and need help deciding whether to stay or move toward a new path.',
+  'I want to decide whether to continue school or start working in a field I am unsure about.',
+  'I need help balancing my finances, my personal life, and my long-term goals.',
 ];
 
 const initialMessages = [
-  { sender: 'bot', text: 'Hi! I am LifeGuide. Tell me about your situation and I will help you break it down into decisions and next steps.' },
+  { sender: 'bot', text: 'Hi! I am LifeGuide. Tell me about your situation and I will help you break it down into options and next steps.' },
 ];
 
 export default function ChatPage() {
   const [messages, setMessages] = useState(initialMessages);
   const [draft, setDraft] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const sendMessage = () => {
-    if (!draft.trim()) return;
+  const sendMessage = async () => {
+    if (!draft.trim() || isLoading) return;
 
     const userMessage = { sender: 'user', text: draft.trim() };
-    const reply = {
-      sender: 'bot',
-      text: `Here is a structured response for your situation: 1) define the problem clearly, 2) compare options, 3) review risks and support, and 4) pick a next step. For your scenario, your next best step is to identify the short-term action that reduces uncertainty the most.`,
-    };
-
-    setMessages((current) => [...current, userMessage, reply]);
+    const prompt = draft.trim();
+    setMessages((current) => [...current, userMessage]);
     setDraft('');
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt,
+          profile: {
+            audience: 'adult',
+            goal: 'Life decision support',
+          },
+        }),
+      });
+
+      const data = await response.json();
+
+      setMessages((current) => [
+        ...current,
+        { sender: 'bot', text: data.reply || 'Here is a path: define the problem, compare options, consider risks, then choose one lower-risk next step.' },
+      ]);
+    } catch (error) {
+      setMessages((current) => [
+        ...current,
+        {
+          sender: 'bot',
+          text: 'I could not reach the AI service right now, but the decision process is still the same: clarify the issue, compare options, review risk, and take the next low-regret action.',
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -61,6 +90,12 @@ export default function ChatPage() {
               </div>
             </div>
           ))}
+
+          {isLoading ? (
+            <div className="flex justify-start">
+              <div className="rounded-2xl bg-white px-4 py-3 text-sm text-slate-700 shadow-sm">LifeGuide is thinking...</div>
+            </div>
+          ) : null}
         </div>
 
         <div className="mt-6 flex gap-3">
@@ -73,8 +108,8 @@ export default function ChatPage() {
               if (event.key === 'Enter') sendMessage();
             }}
           />
-          <button onClick={sendMessage} className="rounded-full bg-brand-600 px-6 py-3 font-semibold text-white transition hover:bg-brand-500">
-            Send
+          <button onClick={sendMessage} disabled={isLoading} className="rounded-full bg-brand-600 px-6 py-3 font-semibold text-white transition hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-60">
+            {isLoading ? 'Sending...' : 'Send'}
           </button>
         </div>
       </div>

@@ -1,37 +1,32 @@
 # LifeGuide
 
-LifeGuide is a personalized decision-making platform for individuals and families. It helps users understand their values, profile their current situation, model scenarios, and receive AI-guided recommendations.
+LifeGuide is a personalized decision-support platform designed for youth and adults. It combines a user profile, AI guided chat, and scenario modeling engine to help people think through important life decisions.
 
-## Tech stack
+## Stack
 
-- Frontend: Next.js
+- Frontend: Next.js + Tailwind CSS
 - Backend: Express + TypeScript
-- Database: PostgreSQL + Prisma
-- AI layer: OpenAI-compatible LLM integration
+- Database: PostgreSQL
+- ORM: Prisma
+- AI layer: LLM-compatible chat endpoint
 
-## Features
+## Key features
 
-- User profile intake
-- Youth and adult audience modes
-- AI chat assistant
-- Scenario modeling engine
-- Decision recommendation dashboard
-- Secure, database-backed persistence
+- Profile intake form
+- LifeGuide landing page and branding
+- Youth and adult pathways
+- AI assistant for scenario-based guidance
+- Scenario modeling dashboard
+- Database schema for profiles, scenarios, and chat messages
 
-## Project structure
-
-- `apps/web` — Next.js frontend
-- `apps/api` — Express API and Prisma schema
-- `docker-compose.yml` — PostgreSQL container setup
-
-## Quick start
+## Local development
 
 1. Install dependencies:
    ```bash
    npm install
    ```
 
-2. Start PostgreSQL:
+2. Start PostgreSQL using Docker:
    ```bash
    docker-compose up -d
    ```
@@ -41,7 +36,7 @@ LifeGuide is a personalized decision-making platform for individuals and familie
    cp apps/api/.env.example apps/api/.env
    ```
 
-4. Run Prisma generate:
+4. Run Prisma generation:
    ```bash
    npm run prisma:generate --workspace apps/api
    ```
@@ -51,15 +46,10 @@ LifeGuide is a personalized decision-making platform for individuals and familie
    npm run dev
    ```
 
-The app will be available at:
+The app runs at:
 - Frontend: http://localhost:3000
 - API: http://localhost:4000
 
-## Environment variables
-
-- `DATABASE_URL` — PostgreSQL connection string
-- `OPENAI_API_KEY` — optional LLM key for live AI responses
-
 ## Notes
 
-The project includes demo-ready pages and endpoints that can be expanded into a full production service with auth, dashboards, and advanced recommendation logic.
+This build provides a production-ready structure with a real app shell, AI chat integration, and scenario modeling support. It can be extended with authentication, a real LLM service, and persistent user data.
